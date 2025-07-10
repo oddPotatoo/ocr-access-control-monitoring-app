@@ -1,0 +1,88 @@
+﻿@using System.Globalization
+@model OCR_AccessControl.Models.PaginatedList<OCR_AccessControl.Models.NonResidentLogs>
+
+@{
+    Layout = "_AdminLayout";
+}
+
+<link rel="stylesheet" href="~/css/timeinout.css" asp-append-version="true" />
+
+<div class="p-5 main-content">
+    <h3 class="mb-3">Overdue Stay Logs</h3>
+    <div class="d-flex flex-column bg-light p-3">
+
+        <!-- Scrollable Table Container -->
+        <div class="table-container mb-3" style="max-height: 60vh; overflow-y: auto;">
+        @if (Model != null && Model.Any())
+        {
+            <table class="table table-striped table-hover text-center">
+                <thead>
+                    <tr>
+                        <th scope="col">NAME</th>
+                        <th scope="col">ID Type</th>
+                        <th scope="col">ID NUMBER</th>
+                        <th scope="col">TIME IN</th>
+                        <th scope="col">STATUS DURATION</th>
+                    </tr>
+                </thead>
+                <tbody>
+                        @foreach (var nonResident in Model)
+                        {
+                            var phTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Manila");
+
+                            // Directly use converted time from controller
+                            var entryTimeLocal = nonResident.entry_time;
+
+                            // Get current Philippine time
+                            var currentPhilippineTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, phTimeZone);
+
+                            string timeIn = entryTimeLocal?.ToString("MMM dd, yyyy hh:mm tt", CultureInfo.CurrentCulture) ?? "-";
+
+                            var duration = currentPhilippineTime - entryTimeLocal;
+                            string durationText = $"{(int)duration.Value.TotalHours}h {duration.Value.Minutes}m";
+
+                            string statusText = $"<span class='alert alert-danger py-1 px-2 d-inline-block m-0'>Overdue Stay ({durationText})</span>";
+
+                            <tr>
+                                <td>@nonResident.full_name</td>
+                                <td>@nonResident.id_type</td>
+                                <td>@nonResident.id_number</td>
+                                <td>@timeIn</td>
+                                <td>@Html.Raw(statusText)</td>
+                            </tr>
+                        }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-info w-100">No overdue stays found.</div>
+        }
+        </div>
+
+        <nav aria-label="Page navigation" class="w-100 mt-3">
+            <ul class="pagination justify-content-center">
+                <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                    <a class="page-link"
+                       href="@Url.Action("TimeIn", new { pageNumber = Model.PageIndex - 1 })">
+                        Previous
+                    </a>
+                </li>
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                        <a class="page-link"
+                           href="@Url.Action("TimeIn", new { pageNumber = i })">@i</a>
+                    </li>
+                }
+                <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                    <a class="page-link"
+                       href="@Url.Action("TimeIn", new { pageNumber = Model.PageIndex + 1 })">
+                        Next
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+    </div>
+</div>

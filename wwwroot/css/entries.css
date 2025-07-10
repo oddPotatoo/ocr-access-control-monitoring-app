@@ -1,0 +1,178 @@
+﻿/* Filter Container */
+.filter-container {
+    background: white;
+    border-radius: 10px; /* Matches dashboard rounded corners */
+    padding: 1.5rem; /* Increased padding for better spacing */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Stronger shadow for depth */
+    margin-bottom: 1.5rem;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem; /* Increased gap for better spacing */
+    align-items: center;
+    justify-content: flex-start; /* Align items to the start */
+    transition: box-shadow 0.3s ease; /* Smooth shadow transition */
+}
+
+    .filter-container:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Enhanced hover effect */
+    }
+
+    .filter-container > * {
+        flex: 1 1 200px; /* Allow items to grow and shrink with a minimum width */
+        min-width: 200px; /* Slightly larger minimum width */
+    }
+
+/* Table Styling */
+.table {
+    margin-bottom: 0;
+    border-collapse: collapse;
+    width: 100%;
+
+    table-layout: fixed; /* Ensures consistent column widths */
+}
+
+    .table thead th {
+        background: #007bff;
+        color: white;
+        padding: 1rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        /* Fixed column widths */
+        width: 27%; /* NAME column */
+    }
+
+        .table thead th:nth-child(2) { /* ID Type */
+            width: 15%;
+        }
+
+        .table thead th:nth-child(3) { /* ID NUMBER */
+            width: 12%;
+        }
+
+        .table thead th:nth-child(4) { /* TIME IN */
+            width: 12%;
+        }
+        .table thead th:nth-child(5) { /* TIME OUT */
+            width: 12%;
+        }
+
+        .table thead th:nth-child(6) { /* STATUS */
+            width: 12%;
+        }
+
+    .table tbody td {
+        padding: 0.75rem;
+        vertical-align: middle;
+        border-bottom: 1px solid #dee2e6;
+        font-size: 0.9rem;
+        color: #343a40;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    /* Ensure table body columns match header widths */
+    .table tbody td {
+        width: inherit !important;
+    }
+
+
+/* Hover Effect */
+.table-hover tbody tr:hover {
+    background-color: #f8fbff; /* Light blue hover */
+    transform: translateX(4px); /* Slight movement on hover */
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth transition */
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1); /* Subtle shadow */
+}
+
+/* Pagination */
+.pagination {
+    margin-top: 1rem; /* Increased margin */
+    justify-content: center; /* Center pagination */
+}
+
+    .pagination .page-link {
+        border: none;
+        color: #007bff; /* Primary color */
+        margin: 0 4px; /* Increased spacing */
+        border-radius: 6px; /* Consistent rounded corners */
+        padding: 0.5rem 0.75rem; /* Larger padding */
+        font-size: 0.9rem; /* Consistent font size */
+        transition: all 0.2s ease; /* Smooth transition */
+    }
+
+        .pagination .page-link:hover {
+            background: #007bff; /* Primary color */
+            color: white;
+            transform: translateY(-1px); /* Slight lift */
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2); /* Subtle shadow */
+        }
+
+    .pagination .page-item.active .page-link {
+        background: #007bff; /* Primary color */
+        color: white;
+        box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3); /* Stronger shadow */
+    }
+
+/* Buttons and Inputs */
+.btn-primary {
+    background: #007bff; /* Primary color */
+    border: none;
+    border-radius: 6px; /* Consistent rounded corners */
+    padding: 0.75rem 1.25rem; /* Larger padding */
+    font-size: 0.9rem; /* Consistent font size */
+    height: auto; /* Remove fixed height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease; /* Smooth transition */
+}
+
+    .btn-primary:hover {
+        background: #0056b3; /* Darker primary color */
+        transform: translateY(-1px); /* Slight lift */
+        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3); /* Stronger shadow */
+    }
+
+.input-group-text {
+    background: #f8f9fa;
+    border-color: #dee2e6;
+    font-size: 0.9rem; /* Consistent font size */
+    padding: 0.5rem 1rem; /* Larger padding */
+    border-radius: 6px; /* Consistent rounded corners */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .filter-container {
+        gap: 1rem; /* Smaller gap on mobile */
+        padding: 1rem; /* Smaller padding */
+    }
+
+        .filter-container > * {
+            flex: 1 1 100%; /* Full width on mobile */
+            min-width: 100%;
+        }
+
+    @media (max-width: 768px) {
+    .table thead th {
+        width: auto !important; /* Let browser handle widths on mobile */
+        white-space: normal;
+    }
+    
+    .table tbody td {
+        white-space: normal;
+    }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 6px;
+        }
+}
+}

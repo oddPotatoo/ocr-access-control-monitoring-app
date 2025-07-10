@@ -1,0 +1,72 @@
+﻿/* timeinout.css */
+
+
+.table-container table.table {
+    margin-bottom: 0;
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+    min-width: unset;
+}
+
+    .table-container table.table thead th {
+        background: #007bff;
+        color: white;
+        padding: 1rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        width: 27%; /* NAME column */
+    }
+
+        .table-container table.table thead th:nth-child(2) { /* ID Type */
+            width: 20%;
+        }
+
+        .table-container table.table thead th:nth-child(3) { /* ID NUMBER */
+            width: 20%;
+        }
+
+        .table-container table.table thead th:nth-child(4) { /* TIME IN */
+            width: 20%;
+        }
+
+        .table-container table.table thead th:nth-child(5) { /* STATUS */
+            width: 15%;
+        }
+
+    .table-container table.table tbody td {
+        padding: 0.75rem;
+        vertical-align: middle;
+        border-bottom: 1px solid #dee2e6;
+        font-size: 0.9rem;
+        color: #343a40;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .table-container {
+        overflow-x: auto;
+        border-radius: 6px;
+    }
+
+        .table-container table.table {
+            min-width: 600px;
+        }
+
+            .table-container table.table thead th {
+                white-space: nowrap;
+                /* Remove width:auto if you want fixed widths on mobile */
+            }
+
+            .table-container table.table tbody td {
+                white-space: nowrap;
+            }
+}

@@ -1,0 +1,78 @@
+﻿@{
+    Layout = "_AdminLayout";
+}
+
+<link rel="stylesheet" href="~/css/dashboard.css" />
+
+<div class="p-5 main-content">
+    <!-- Date/Time Header -->
+    <div class="dashboard-datetime">
+        <i class="fas fa-clock me-2"></i>
+        @ViewBag.CurrentPHT
+    </div>
+
+    <!-- Visitor Statistics -->
+    <div class="stats-group">
+        <!-- Today's Visitors -->
+        <div class="stats-card non-resident-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="stats-label">Today's Visitors</div>
+                        <div class="stats-value">@ViewBag.NonResidentCountToday</div>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fa-solid fa-calendar-day"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weekly Visitors -->
+        <div class="stats-card weekly-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="stats-label">Weekly Visitors</div>
+                        <div class="stats-value">@ViewBag.NonResidentCountWeekly</div>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fa-solid fa-calendar-week"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Visitors -->
+        <div class="stats-card monthly-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="stats-label">Monthly Visitors</div>
+                        <div class="stats-value">@ViewBag.NonResidentCountMonthly</div>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fa-solid fa-calendar-alt"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Separated Gates Section -->
+    <div class="gates-section">
+        <div class="stats-card gates-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="stats-label">Total Gates</div>
+                        <div class="stats-value">1</div>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fa-solid fa-door-open"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

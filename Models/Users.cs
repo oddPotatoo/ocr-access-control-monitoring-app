@@ -1,0 +1,10 @@
+﻿namespace OCR_AccessControl.Models
+{
+    public class Users
+    {
+        public int Id { get; set; } //Primary Key
+        public string? Email { get; set; }
+        public string? Username { get; set; }
+        public string? Password { get; set; }
+    }
+}

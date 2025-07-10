@@ -1,0 +1,246 @@
+﻿@using System.Globalization
+@model OCR_AccessControl.Models.PaginatedList<OCR_AccessControl.Models.NonResidentLogs>
+
+@{
+    Layout = "_AdminLayout";
+    string filter = ViewBag.Filter ?? "All"; // Default to "all"
+}
+
+<link rel="stylesheet" href="~/css/entries.css" asp-append-version="true" />
+
+<div class="p-5 main-content">
+    <div class="d-flex bg-light p-3 flex-column">
+        <!-- Filter/Search/Sort Header -->
+        <div class="filter-container mb-4">
+            <div class="row g-3 align-items-end">
+                <!-- Date Filters -->
+                <div class="col-md-4">
+                    <select class="form-select" id="mainFilter" onchange="updateFilterControls()">
+                        <option value="All" selected='@(ViewBag.Filter == "All")'>All Time</option>
+                        <option value="Today" selected='@(ViewBag.Filter == "Today")'>Today</option>
+                        <option value="Week" selected='@(ViewBag.Filter == "Week")'>This Week</option>
+                        <option value="Month" selected='@(ViewBag.Filter == "Month")'>This Month</option>
+                        <option value="Quarter" selected='@(ViewBag.Filter == "Quarter")'>This Quarter</option>
+                        <option value="Semi-Annual" selected='@(ViewBag.Filter == "Semi-Annual")'>This Half-Year</option>
+                        <option value="Year" selected='@(ViewBag.Filter == "Year")'>This Year</option>
+                        <option value="Range" selected='@(ViewBag.Filter == "Range")'>Custom Range</option>
+                    </select>   
+                </div>
+
+                <!-- Month/Year Selector -->
+                <div class="col-md-3" id="monthYearGroup" style="display: none;">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <select class="form-select" id="monthSelect">
+                                @foreach (var month in DateTimeFormatInfo.CurrentInfo.MonthNames.Where(m => !string.IsNullOrEmpty(m)))
+                                {
+                                    <option value="@month">@month</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <select class="form-select" id="yearSelect">
+                                @for (int y = DateTime.Now.Year - 5; y <= DateTime.Now.Year + 1; y++)
+                                {
+                                    <option value="@y" selected="@(y == DateTime.Now.Year)">@y</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Date Range Picker -->
+                <div class="col-md-4" id="dateRangeGroup" style="display: none;">
+                    <div class="input-group">
+                        <input type="date" class="form-control" id="startDate"
+                               value="@ViewBag.StartDate">
+                        <span class="input-group-text">to</span>
+                        <input type="date" class="form-control" id="endDate"
+                               value="@ViewBag.EndDate">
+                    </div>
+                </div>
+
+                <!-- Apply Button -->
+                <div class="col-md-1">
+                    <button class="btn btn-primary w-100" onclick="applyFilters()">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                </div>
+
+                <!-- Search Input -->
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <input type="text"
+                               class="form-control"
+                               placeholder="Search..."
+                               id="searchInput"
+                               value="@ViewBag.Search"
+                               onkeyup="debounceSearch(this.value)">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Status Filter -->
+                <div class="col-md-2">
+                    <select class="form-select" id="statusFilter" onchange="applyFilters()">
+                        <option value="" selected='@(string.IsNullOrEmpty(ViewBag.Status))'>All Statuses</option>
+                        <option value="inside" selected='@(ViewBag.Status == "inside")'>Inside</option>
+                        <option value="exited" selected='@(ViewBag.Status == "exited")'>Exited</option>
+                        <option value="overdue" selected='@(ViewBag.Status == "overdue")'>Overdue</option>
+                    </select>
+                </div>
+
+                <!-- Sort Dropdown -->
+                <div class="col-md-2">
+                    <!-- Change the sortSelect options to match controller values -->
+                    <select class="form-select" id="sortSelect" onchange="applyFilters()">
+                        <option value="entry_desc">Newest First</option>
+                        <option value="entry_asc">Oldest First</option>
+                        <option value="name_asc">A-Z</option>
+                        <option value="name_desc">Z-A</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scrollable Table Container -->
+        <div class="table-container mb-3" style="max-height: 60vh; overflow-y: auto;">
+            @if (Model != null && Model.Any())
+            {
+                <table class="table table-striped table-hover text-center">
+                    <thead>
+                        <tr>
+                            <th scope="col">NAME</th>
+                            <th scope="col">ID Type</th>
+                            <th scope="col">ID NUMBER</th>
+                            <th scope="col">TIME IN</th>
+                            <th scope="col">TIME OUT</th>
+                            <th scope="col">STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var nonResident in Model)
+                        {
+                            var phTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Manila");
+
+                            var entryTimeLocal = nonResident.entry_time.HasValue
+                            ? TimeZoneInfo.ConvertTimeFromUtc(nonResident.entry_time.Value, phTimeZone)
+                            : (DateTime?)null;
+
+                            var exitTimeLocal = nonResident.exit_time.HasValue
+                            ? TimeZoneInfo.ConvertTimeFromUtc(nonResident.exit_time.Value, phTimeZone)
+                            : (DateTime?)null;
+
+                            string timeIn = entryTimeLocal.HasValue
+                            ? entryTimeLocal.Value.ToString("MMM dd, yyyy hh:mm tt", CultureInfo.CurrentCulture)
+                            : "-";
+
+                            string timeOut = exitTimeLocal.HasValue
+                            ? exitTimeLocal.Value.ToString("MMM dd, yyyy hh:mm tt", CultureInfo.CurrentCulture)
+                            : "-";
+
+                            bool isStillInside = !exitTimeLocal.HasValue;
+                            bool isOverdue = false;
+                            bool exitedAfterOverdue = false;
+                            string statusText = "-";
+
+                            if (entryTimeLocal.HasValue)
+                            {
+                                var duration = isStillInside
+                                ? DateTime.Now - entryTimeLocal.Value
+                                : exitTimeLocal.Value - entryTimeLocal.Value;
+
+                                string durationText = $"{(int)duration.TotalHours}h {duration.Minutes}m";
+
+                                // Overdue Stay Check (More than 24 hours)
+                                isOverdue = isStillInside && duration.TotalHours >= 24;
+                                exitedAfterOverdue = !isStillInside && duration.TotalHours >= 24;
+
+                                if (isStillInside)
+                                {
+                                    statusText = isOverdue
+                                    ? $"<span class='alert alert-danger py-1 px-2 d-inline-block m-0'>Overdue Stay ({durationText})</span>"
+                                    : $"<span class='alert alert-warning py-1 px-2 d-inline-block m-0'>Still Inside ({durationText})</span>";
+                                }
+                                else
+                                {
+                                    statusText = exitedAfterOverdue
+                                    ? $"<span class='alert alert-danger py-1 px-2 d-inline-block m-0'>Exited ({durationText})</span>"
+                                    : $"<span class='alert alert-success py-1 px-2 d-inline-block m-0'>Exited ({durationText})</span>";
+                                }
+                            }
+
+                            <tr>
+                                <td>@nonResident.full_name</td>
+                                <td>@nonResident.id_type</td>
+                                <td>@nonResident.id_number</td>
+                                <td>@timeIn</td>
+                                <td>@timeOut</td>
+                                <td>@Html.Raw(statusText)</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-info w-100">No Non-Resident Logs Data found for @filter.</div>
+            }
+        </div>
+        <!-- Pagination -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                    <a class="page-link"
+                       href="@Url.Action("Entries", new {
+                   pageNumber = Model.PageIndex - 1,
+                   filter = ViewBag.Filter,
+                   search = ViewBag.Search,
+                   status = ViewBag.Status,
+                   sort = ViewBag.Sort,
+                   startDate = ViewBag.StartDate,
+                   endDate = ViewBag.EndDate
+               })">
+                        Previous
+                    </a>
+                </li>
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                        <a class="page-link"
+                           href="@Url.Action("Entries", new {
+                       pageNumber = i,
+                       filter = ViewBag.Filter,
+                       search = ViewBag.Search,
+                       status = ViewBag.Status,
+                       sort = ViewBag.Sort,
+                       startDate = ViewBag.StartDate,
+                       endDate = ViewBag.EndDate
+                   })">@i</a>
+                    </li>
+                }
+                <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                    <a class="page-link"
+                       href="@Url.Action("Entries", new {
+                   pageNumber = Model.PageIndex + 1,
+                   filter = ViewBag.Filter,
+                   search = ViewBag.Search,
+                   status = ViewBag.Status,
+                   sort = ViewBag.Sort,
+                   startDate = ViewBag.StartDate,
+                   endDate = ViewBag.EndDate
+               })">
+                        Next
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+
+
+<script src="~/js/entries.js"></script>

@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="login-container">
+    <!-- Logo in the upper-left corner -->
+    <div class="logo-container">
+        <img src="/logo1.png" class="logo" alt="Logo" />
+    </div>
+
+    <!-- Centered login form -->
+    <div class="d-flex justify-content-center align-items-center vh-100">
+        <div class="login-box text-center">
+            <h3 class="text-center fs-1 fw-bold mb-5">LOGIN</h3>
+            
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger mb-3" role="alert">
+                    ❌ Invalid username or password
+                </div>
+            }
+
+            <form id="loginForm" asp-action="Login" asp-controller="User" method="post">
+                <div class="mb-3">
+                    <input type="email" class="form-control shadow-sm rounded-3" 
+                           id="email" name="Email" placeholder="USERNAME" required>
+                </div>
+                <div class="mb-3 position-relative">
+                    <input type="password" class="form-control shadow-sm rounded-3 pe-5" 
+                           id="password" name="Password" placeholder="PASSWORD" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 rounded-3">LOGIN</button>
+            </form>
+        </div>
+    </div>
+</div>

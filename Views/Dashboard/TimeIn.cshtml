@@ -1,0 +1,108 @@
+﻿@using System.Globalization
+@model OCR_AccessControl.Models.PaginatedList<OCR_AccessControl.Models.NonResidentLogs>
+
+@{
+    Layout = "_AdminLayout";
+}
+
+<link rel="stylesheet" href="~/css/timeinout.css" asp-append-version="true" />
+
+<div class="p-5 main-content">
+    <h3 class="mb-3">Time In Entries</h3>
+    <div class="d-flex flex-column bg-light p-3">
+
+        <!-- Scrollable Table Container -->
+        <div class="table-container mb-3" style="max-height: 60vh; overflow-y: auto;">
+            @if (Model != null && Model.Any())
+            {
+                <table class="table table-striped table-hover text-center">
+                <thead>
+                    <tr>
+                        <th scope="col">NAME</th>
+                        <th scope="col">ID Type</th>
+                        <th scope="col">ID NUMBER</th>
+                        <th scope="col">TIME IN</th>
+                        <th scope="col">STATUS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var nonResident in Model)
+                    {
+                        string timeIn = nonResident.entry_time.HasValue
+                        ? nonResident.entry_time.Value.ToString("MMM dd, yyyy hh:mm tt", CultureInfo.CurrentCulture)
+                        : "-";
+
+                        bool isStillInside = !nonResident.exit_time.HasValue;
+                        bool isOverdue = false;
+                        bool exitedAfterOverdue = false;
+                        string statusText = "-";
+
+                        if (nonResident.entry_time.HasValue)
+                        {
+                            var duration = isStillInside
+                            ? DateTime.Now - nonResident.entry_time.Value
+                            : nonResident.exit_time.Value - nonResident.entry_time.Value;
+
+                            string durationText = $"{(int)duration.TotalHours}h {duration.Minutes}m";
+
+                            // Overdue Stay Check (More than 24 hours)
+                            isOverdue = isStillInside && duration.TotalHours >= 24;
+                            exitedAfterOverdue = !isStillInside && duration.TotalHours >= 24;
+
+                            if (isStillInside)
+                            {
+                                statusText = isOverdue
+                                ? $"<span class='alert alert-danger py-1 px-2 d-inline-block m-0'>Overdue Stay ({durationText})</span>"
+                                : $"<span class='alert alert-warning py-1 px-2 d-inline-block m-0'>Still Inside ({durationText})</span>";
+                            }
+                            else
+                            {
+                                statusText = exitedAfterOverdue
+                                ? $"<span class='alert alert-danger py-1 px-2 d-inline-block m-0'>Exited ({durationText})</span>"
+                                : $"<span class='alert alert-success py-1 px-2 d-inline-block m-0'>Exited ({durationText})</span>";
+                            }
+                        }
+
+                        <tr>
+                            <td>@nonResident.full_name</td>
+                            <td>@nonResident.id_type</td>
+                            <td>@nonResident.id_number</td>
+                            <td>@timeIn</td>
+                            <td>@Html.Raw(statusText)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            }
+            else
+            {
+                <div class="alert alert-info w-100">No Entry Data found.</div>
+            }
+        </div>
+
+            <nav aria-label="Page navigation" class="w-100 mt-3">
+                <ul class="pagination justify-content-center">
+                        <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                            <a class="page-link"
+                               href="@Url.Action("TimeIn", new { pageNumber = Model.PageIndex - 1 })">
+                                Previous
+                            </a>
+                        </li>
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                                <a class="page-link"
+                                   href="@Url.Action("TimeIn", new { pageNumber = i })">@i</a>
+                            </li>
+                        }
+                        <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                            <a class="page-link"
+                               href="@Url.Action("TimeIn", new { pageNumber = Model.PageIndex + 1 })">
+                                Next
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+       
+    </div>
+</div>

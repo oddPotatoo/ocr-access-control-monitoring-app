@@ -1,0 +1,98 @@
+﻿/* Updated Dashboard Styles */
+.dashboard-datetime {
+    font-size: 1.2rem;
+    color: #6c757d;
+    text-align: right;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.stats-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.gates-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid #f8f9fa;
+}
+
+.stats-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-left: 4px solid;
+    transition: transform 0.2s ease;
+}
+
+    .stats-card:hover {
+        transform: translateY(-3px);
+    }
+
+.stats-label {
+    font-size: 0.9rem;
+    color: #95a5a6;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.stats-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    line-height: 1.2;
+}
+
+.stats-icon {
+    color: #fff;
+    background: rgba(0,0,0,0.08);
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .stats-icon i {
+        font-size: 1.5rem;
+    }
+
+/* Border Colors */
+.non-resident-card {
+    border-color: #3498db;
+}
+
+.weekly-card {
+    border-color: #2ecc71;
+}
+
+.monthly-card {
+    border-color: #9b59b6;
+}
+
+.gates-card {
+    border-color: #f39c12;
+}
+
+/* Icon Colors */
+.non-resident-card .stats-icon {
+    background: #3498db;
+}
+
+.weekly-card .stats-icon {
+    background: #2ecc71;
+}
+
+.monthly-card .stats-icon {
+    background: #9b59b6;
+}
+
+.gates-card .stats-icon {
+    background: #f39c12;
+}
