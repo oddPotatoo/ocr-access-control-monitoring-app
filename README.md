@@ -10,31 +10,23 @@ Developed using Python, PaddleOCR, PostgreSQL, and Firebase, the system provides
 
 ---
 
-## 🖼️ Entrance UI
+## 🖼️ Login UI
   <div align="center">
-    <img src="assets/Entrance-1.png" alt="UI Preview" width="600"/>
-    <img src="assets/Entrance-2.png" alt="UI Preview" width="600"/>
+    <img src="assets/ocr_login_page.png" alt="UI Preview" width="600"/>
   </div>
 
-## 🖼️ Exit UI
+## 🖼️ Dashboard UI
   <div align="center">
-    <img src="assets/Exit-1.png" alt="UI Preview" width="600"/>
-    <img src="assets/Exit-2.png" alt="UI Preview" width="600"/>
+    <img src="assets/ocr_dashboard_page.png" alt="UI Preview" width="600"/>
+    <img src="assets/ocr_dashboard_page_1.png" alt="UI Preview" width="600"/>
+  </div>
+
+## 🖼️ Non-Resident Logs UI
+  <div align="center">
+    <img src="assets/ocr_non-resident_logs_page.png" alt="UI Preview" width="600"/>
+    <img src="assets/ocr_overdues_page.png" alt="UI Preview" width="600"/>
   </div>
   
-## 🖼️ OCR-Based Access Control System
-
-| Sample Prototype - Front | Sample Prototype - Back |
-|--------------|--------------|
-| ![Screenshot 1](assets/sample-prototype-1.png) | ![Screenshot 2](assets/sample-prototype-2.png) |
-
-## 🖼️ System Architecture
-  <div align="center">
-    <img src="assets/OCR System Architecture.png" alt="UI Preview" width="600"/>
-  </div>
-The web-based app monitoring is not included in this repository. You may develop your own web-based app by using the firebase real-time database for data synchronization.
-
-
 ---
 
 ## ✨ Features
@@ -45,19 +37,3 @@ The web-based app monitoring is not included in this repository. You may develop
 - ▶️ Automated QR Ticket Generation
 - 📶 Seamless QR-Based Exit Verification
 - ✅ Applicable for various visitor entry and exit management such as for pedestrians, visitor vehicle entry/exit, offices, schools and campuses, and gated areas.
-
----
-
-## ‼️ Requirements
-
-- 📷 High Resolution Camera for ID Scanning
-- 🖨️ Thermal Printer for QR Code Printing
-- 💻 Raspberry Pi 4 or above / Windows PC
-
----
-
-## 🚀 How to Use
-  <div align="center">
-    <img src="assets/How-to-use.png" alt="UI Preview" width="600"/>
-  </div>
-
